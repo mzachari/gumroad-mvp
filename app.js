@@ -1,7 +1,10 @@
 const booksList = document.querySelector(".books-list");
+const bookDetail = document.querySelector(".books-detail-view");
+const bookTitle = document.querySelector(".book-title");
+const bookRating = document.querySelector(".book-rating-number");
 
 
-var books = [
+const books = [
     {
         "isbn":"9781593279509",
         "title":"Eloquent JavaScript, Third Edition",
@@ -92,22 +95,38 @@ var books = [
     }
 ]
 
-for(const book of books){
-    createBookItem(book.title);
-}
-
-function createBookItem(bookTitle) {
-//     <span class="material-icons-outlined">
-// arrow_forward_ios
-// </span>
+const createBookItem = (book) => {
+    const bookTitle = book.title;
+    const bookId = book.isbn;
     var div = document.createElement("div");
     div.classList.add('book-item');
     var text = document.createTextNode(bookTitle);
     const expandButton = document.createElement("button");
+    expandButton.id = 'book-' + bookId;
+    expandButton.classList.add("button");
     expandButton.classList.add("book-expand-btn");
+    expandButton.addEventListener("click", function() {
+        showBookDetails(book);       
+    });
     const expandButtonText = document.createTextNode(">");
     expandButton.appendChild(expandButtonText);
     div.appendChild(text);
     div.appendChild(expandButton);
     booksList.appendChild(div);
 }
+
+const showBookDetails = (book) => {
+      bookDetail.style.display = 'block';
+      booksList.style.display = 'none';
+      bookTitle.innerText = book.title;
+      bookRating.innerText = 4;
+}
+
+const showBookList = () => {
+    bookDetail.style.display = 'none';
+    booksList.style.display = 'block';
+}
+for(const book of books){
+    createBookItem(book);
+}
+

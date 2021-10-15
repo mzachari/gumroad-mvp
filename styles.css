@@ -6,9 +6,9 @@
   
 .app {
     height: 100vh;
-    display: flex;
+    /* display: flex;
     justify-content: space-evenly;
-    align-items: center;
+    align-items: center; */
     font-family: "Montserrat", sans-serif;
 }
 
@@ -37,14 +37,28 @@
 .book-item:hover{
     background-color: #FAFAFA;
 }
-.book-expand-btn{
+
+.button {
     border: none;
-    border-radius: 100%;
     color: black;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.5rem;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 2rem;
     cursor: pointer;
+}
+.book-expand-btn{
+    border-radius: 100%;
+    font-size: 2rem;
+}
+.book-detail-subtitle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.books-detail-view{
+    display: none;
+    width: 60%;
+    margin: auto;
+    padding-top: 4rem;
 }
