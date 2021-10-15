@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+.app {
+    height: 100vh;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-family: "Montserrat", sans-serif;
+}
+
+.books-list{
+    margin:auto;
+    width: 60%;
+    font-size: 1rem;
+}
+
+.book-item{
+    margin: 0.5rem;
+    padding: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.125rem;
+    font-weight: bold;
+    box-shadow: 0px 0px 10px #FAFAFA;
+
+}
+
+.book-item:hover{
+    background-color: #FAFAFA;
+}
+.book-expand-btn{
+    border: none;
+    border-radius: 100%;
+    color: black;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 2rem;
+    cursor: pointer;
+}
