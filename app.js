@@ -1,132 +1,129 @@
-const booksList = document.querySelector(".books-list");
-const bookDetail = document.querySelector(".books-detail-view");
-const bookTitle = document.querySelector(".book-title");
-const bookRating = document.querySelector(".book-rating-number");
+const productList = document.querySelector(".product-list");
+const productDetail = document.querySelector(".product-detail-view");
+const productTitle = document.querySelector(".product-title");
+const productRating = document.querySelector(".product-rating-number");
+const addReviewPopup = document.getElementById("addReviewPopup");
+const reviewList = document.querySelector(".review-list");
+const productRatingStars = document.querySelector(".product-rating-stars");
 
+const productsEndpoint =
+  "https://1ull7204d9.execute-api.ap-south-1.amazonaws.com/dev/products/";
+const reviewsEndpoint =
+  "https://sasxhpisr2.execute-api.ap-south-1.amazonaws.com/dev/reviews/";
 
-const books = [
-    {
-        "isbn":"9781593279509",
-        "title":"Eloquent JavaScript, Third Edition",
-        "subtitle":"A Modern Introduction to Programming",
-        "author":"Marijn Haverbeke",
-        "published":"2018-12-04T00:00:00.000Z",
-        "publisher":"No Starch Press",
-        "pages":472,
-        "description":"JavaScript lies at the heart of almost every modern web application, from social apps like Twitter to browser-based game frameworks like Phaser and Babylon. Though simple for beginners to pick up and play with, JavaScript is a flexible, complex language that you can use to build full-scale applications.",
-        "website":"http://eloquentjavascript.net/"
-    },
-    {
-        "isbn":"9781491943533",
-        "title":"Practical Modern JavaScript",
-        "subtitle":"Dive into ES6 and the Future of JavaScript",
-        "author":"Nicolás Bevacqua",
-        "published":"2017-07-16T00:00:00.000Z",
-        "publisher":"O'Reilly Media",
-        "pages":334,
-        "description":"To get the most out of modern JavaScript, you need learn the latest features of its parent specification, ECMAScript 6 (ES6). This book provides a highly practical look at ES6, without getting lost in the specification or its implementation details.",
-        "website":"https://github.com/mjavascript/practical-modern-javascript"
-    },
-    {
-        "isbn":"9781593277574",
-        "title":"Understanding ECMAScript 6",
-        "subtitle":"The Definitive Guide for JavaScript Developers",
-        "author":"Nicholas C. Zakas",
-        "published":"2016-09-03T00:00:00.000Z",
-        "publisher":"No Starch Press",
-        "pages":352,
-        "description":"ECMAScript 6 represents the biggest update to the core of JavaScript in the history of the language. In Understanding ECMAScript 6, expert developer Nicholas C. Zakas provides a complete guide to the object types, syntax, and other exciting changes that ECMAScript 6 brings to JavaScript.",
-        "website":"https://leanpub.com/understandinges6/read"
-    },
-    {
-        "isbn":"9781449365035",
-        "title":"Speaking JavaScript",
-        "subtitle":"An In-Depth Guide for Programmers",
-        "author":"Axel Rauschmayer",
-        "published":"2014-04-08T00:00:00.000Z",
-        "publisher":"O'Reilly Media",
-        "pages":460,
-        "description":"Like it or not, JavaScript is everywhere these days -from browser to server to mobile- and now you, too, need to learn the language or dive deeper than you have. This concise book guides you into and through JavaScript, written by a veteran programmer who once found himself in the same position.",
-        "website":"http://speakingjs.com/"
-    },
-    {
-        "isbn":"9781449331818",
-        "title":"Learning JavaScript Design Patterns",
-        "subtitle":"A JavaScript and jQuery Developer's Guide",
-        "author":"Addy Osmani",
-        "published":"2012-08-30T00:00:00.000Z",
-        "publisher":"O'Reilly Media",
-        "pages":254,
-        "description":"With Learning JavaScript Design Patterns, you'll learn how to write beautiful, structured, and maintainable JavaScript by applying classical and modern design patterns to the language. If you want to keep your code efficient, more manageable, and up-to-date with the latest best practices, this book is for you.",
-        "website":"http://www.addyosmani.com/resources/essentialjsdesignpatterns/book/"
-    },
-    {
-        "isbn":"9798602477429",
-        "title":"You Don't Know JS Yet",
-        "subtitle":"Get Started",
-        "author":"Kyle Simpson",
-        "published":"2020-01-28T00:00:00.000Z",
-        "publisher":"Independently published",
-        "pages":143,
-        "description":"The worldwide best selling You Don't Know JS book series is back for a 2nd edition: You Don't Know JS Yet. All 6 books are brand new, rewritten to cover all sides of JS for 2020 and beyond.",
-        "website":"https://github.com/getify/You-Dont-Know-JS/tree/2nd-ed/get-started"
-    },
-    {
-        "isbn":"9781484200766",
-        "title":"Pro Git",
-        "subtitle":"Everything you neeed to know about Git",
-        "author":"Scott Chacon and Ben Straub",
-        "published":"2014-11-18T00:00:00.000Z",
-        "publisher":"Apress; 2nd edition",
-        "pages":458,
-        "description":"Pro Git (Second Edition) is your fully-updated guide to Git and its usage in the modern world. Git has come a long way since it was first developed by Linus Torvalds for Linux kernel development. It has taken the open source world by storm since its inception in 2005, and this book teaches you how to use it like a pro.",
-        "website":"https://git-scm.com/book/en/v2"
-    },
-    {
-        "isbn":"9781484242216",
-        "title":"Rethinking Productivity in Software Engineering",
-        "subtitle":"",
-        "author":"Caitlin Sadowski, Thomas Zimmermann",
-        "published":"2019-05-11T00:00:00.000Z",
-        "publisher":"Apress",
-        "pages":310,
-        "description":"Get the most out of this foundational reference and improve the productivity of your software teams. This open access book collects the wisdom of the 2017 \"Dagstuhl\" seminar on productivity in software engineering, a meeting of community leaders, who came together with the goal of rethinking traditional definitions and measures of productivity.",
-        "website":"https://doi.org/10.1007/978-1-4842-4221-6"
-    }
-]
+window.addEventListener("load", (event) => {
+  fetchProductList();
+});
 
-const createBookItem = (book) => {
-    const bookTitle = book.title;
-    const bookId = book.isbn;
-    var div = document.createElement("div");
-    div.classList.add('book-item');
-    var text = document.createTextNode(bookTitle);
-    const expandButton = document.createElement("button");
-    expandButton.id = 'book-' + bookId;
-    expandButton.classList.add("button");
-    expandButton.classList.add("book-expand-btn");
-    expandButton.addEventListener("click", function() {
-        showBookDetails(book);       
-    });
-    const expandButtonText = document.createTextNode(">");
-    expandButton.appendChild(expandButtonText);
-    div.appendChild(text);
-    div.appendChild(expandButton);
-    booksList.appendChild(div);
-}
+window.onclick = function (event) {
+  console.log(event.target);
+  if (event.target === addReviewPopup) {
+    closeAddReviewPopup();
+  }
+};
 
-const showBookDetails = (book) => {
-      bookDetail.style.display = 'block';
-      booksList.style.display = 'none';
-      bookTitle.innerText = book.title;
-      bookRating.innerText = 4;
-}
+const fetchProductList = async () => {
+  const apiResponse = await fetch(productsEndpoint);
+  const productList = await apiResponse.json();
+  for (const item of productList.data) {
+    createProductListItem(item);
+  }
+};
 
-const showBookList = () => {
-    bookDetail.style.display = 'none';
-    booksList.style.display = 'block';
-}
-for(const book of books){
-    createBookItem(book);
-}
+const createProductListItem = (product) => {
+  const productTitle = product.title;
+  const productId = product.productId;
 
+  const productNode = document.createElement("div");
+  productNode.classList.add("product-item");
+
+  const text = document.createTextNode(productTitle);
+
+  const expandButton = document.createElement("button");
+  expandButton.id = "product-" + productId;
+  expandButton.classList.add("button");
+  expandButton.classList.add("product-expand-btn");
+  expandButton.addEventListener("click", function () {
+    showProductDetails(product);
+  });
+  const expandButtonText = document.createTextNode(">");
+  expandButton.appendChild(expandButtonText);
+
+  productNode.appendChild(text);
+  productNode.appendChild(expandButton);
+
+  productList.appendChild(productNode);
+};
+
+const showProductDetails = (product) => {
+  productDetail.style.display = "block";
+  productList.style.display = "none";
+  productTitle.innerText = product.title;
+  productRating.innerText = 4;
+  fetchProductReviews(product.productId);
+};
+
+const fetchProductReviews = async (productId) => {
+  const apiResponse = await fetch(reviewsEndpoint + productId);
+  const reviewList = await apiResponse.json();
+
+  for (const review of reviewList.data) {
+    createReviewListItem(review);
+  }
+
+  const avgRating = Math.ceil(getAvgRating(reviewList.data));
+  showRatingStars(avgRating, productRatingStars);
+};
+
+const createReviewListItem = (review) => {
+  const reviewNode = document.createElement("div");
+  reviewNode.className = "review-item my-3 d-flex align-items-center";
+
+  const ratingStarsDiv = document.createElement("div");
+  showRatingStars(review.rating, ratingStarsDiv);
+
+  const ratingNumberDiv = document.createElement("div");
+  ratingNumberDiv.innerText = review.rating;
+  ratingNumberDiv.className = "review-rating-number";
+
+  const reviewText = document.createElement("div");
+  reviewText.innerText = review.reviewText || "";
+
+  reviewNode.appendChild(ratingStarsDiv);
+  reviewNode.appendChild(ratingNumberDiv);
+  reviewNode.appendChild(reviewText);
+
+  reviewList.appendChild(reviewNode);
+};
+
+const getAvgRating = (reviewList) => {
+  let avgRating = 0;
+  for (const review of reviewList) {
+    avgRating += review.rating;
+  }
+
+  return avgRating / reviewList.length;
+};
+
+const showRatingStars = (ratingValue, parentNode) => {
+    console.log(ratingValue);
+  for (let i = 1; i <= 5; i++) {
+    const starSpan = document.createElement("span");
+    starSpan.className = i <= ratingValue ? "fa fa-star checked" : "fa fa-star";
+
+    parentNode.appendChild(starSpan);
+  }
+};
+
+const showProductList = () => {
+  productDetail.style.display = "none";
+  productList.style.display = "block";
+};
+
+const openAddReviewPopup = () => {
+  addReviewPopup.style.display = "block";
+};
+
+const closeAddReviewPopup = () => {
+  addReviewPopup.style.display = "none";
+};
