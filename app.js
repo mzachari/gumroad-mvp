@@ -143,6 +143,7 @@ const showProductList = () => {
 const openAddReviewPopup = () => {
   addReviewPopup.style.display = "block";
   reviewText.value = "";
+  ratingStarClicked(-1);
 };
 
 const closeAddReviewPopup = () => {
@@ -183,5 +184,6 @@ const submitReview = async () => {
     },
   });
   const newReview = await apiResponse.json();
-  console.log(newReview);
+  closeAddReviewPopup();
+  createReviewListItem(newReview.data);
 };
