@@ -23,16 +23,14 @@ window.addEventListener("load", (event) => {
 });
 
 window.onclick = function (event) {
-  console.log(event.target);
   if (event.target === addReviewPopup) {
     closeAddReviewPopup();
   }
 };
 
 const fetchProductList = async () => {
-  const apiResponse = await fetch(productsEndpoint);
-  const productList = await apiResponse.json();
-  for (const item of productList.data) {
+  const productList = (await get(productsEndpoint)) || [];
+  for (const item of productList) {
     createProductListItem(item);
   }
 };
@@ -71,21 +69,20 @@ const showProductDetails = (product) => {
 };
 
 const fetchProductReviews = async (productId) => {
-  const apiResponse = await fetch(reviewsEndpoint + productId);
-  const reviewList = await apiResponse.json();
+  const reviewList = (await get(reviewsEndpoint + productId)) || reviewList;
 
-  const reviewsPresent = reviewList.data.length > 0;
+  const reviewsPresent = reviewList.length > 0;
 
   if (!reviewsPresent) {
     noReviewsSection.style.display = "block";
     return;
   } else {
     noReviewsSection.style.display = "none";
-    for (const review of reviewList.data) {
+    for (const review of reviewList) {
       createReviewListItem(review);
     }
 
-    const avgRating = getAvgRating(reviewList.data);
+    const avgRating = getAvgRating(reviewList);
     productRating.innerText = Math.round(avgRating * 100) / 100;
     showRatingStars(Math.ceil(avgRating), productRatingStars);
   }
@@ -122,7 +119,6 @@ const getAvgRating = (reviewList) => {
 };
 
 const showRatingStars = (ratingValue, parentNode) => {
-  console.log(ratingValue);
   for (let i = 1; i <= 5; i++) {
     const starSpan = document.createElement("span");
     starSpan.className = i <= ratingValue ? "fa fa-star checked" : "fa fa-star";
@@ -173,17 +169,36 @@ const ratingStarClicked = (ratingVal) => {
 
 const submitReview = async () => {
   newReviewText = reviewText.value;
-  const apiResponse = await fetch(reviewsEndpoint + selectedProductId, {
+  const newReview = await post(reviewsEndpoint + selectedProductId, {
+    reviewText: newReviewText,
+    rating: newRating,
+  });
+  closeAddReviewPopup();
+  createReviewListItem(newReview);
+};
+
+const get = async (endpointId) => {
+  const apiResponse = await fetch(endpointId);
+  if (apiResponse.ok) {
+    const responseData = await apiResponse.json();
+    return responseData.data;
+  } else {
+    return null;
+  }
+};
+
+const post = async (endpointId, body) => {
+  const apiResponse = await fetch(endpointId, {
     method: "POST",
-    body: JSON.stringify({
-      reviewText: newReviewText,
-      rating: newRating,
-    }),
+    body: JSON.stringify(body),
     headers: {
       "Content-type": "application/json",
     },
   });
-  const newReview = await apiResponse.json();
-  closeAddReviewPopup();
-  createReviewListItem(newReview.data);
+  if (apiResponse.ok) {
+    const responseData = await apiResponse.json();
+    return responseData.data;
+  } else {
+    return null;
+  }
 };
