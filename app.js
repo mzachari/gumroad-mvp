@@ -5,6 +5,7 @@ const productRating = document.querySelector(".product-rating-number");
 const addReviewPopup = document.getElementById("addReviewPopup");
 const reviewList = document.querySelector(".review-list");
 const productRatingStars = document.querySelector(".product-rating-stars");
+const noReviewsSection = document.querySelector(".no-reviews");
 
 const productsEndpoint =
   "https://1ull7204d9.execute-api.ap-south-1.amazonaws.com/dev/products/";
@@ -66,13 +67,19 @@ const fetchProductReviews = async (productId) => {
   const apiResponse = await fetch(reviewsEndpoint + productId);
   const reviewList = await apiResponse.json();
 
+  const reviewsPresent = reviewList.data.length > 0;
+
+  if (!reviewsPresent) {
+    noReviewsSection.style.display = "block";
+    return;
+  }
   for (const review of reviewList.data) {
     createReviewListItem(review);
   }
 
-  const avgRating = Math.ceil(getAvgRating(reviewList.data));
+  const avgRating = getAvgRating(reviewList.data);
   productRating.innerText = avgRating;
-  showRatingStars(avgRating, productRatingStars);
+  showRatingStars(Math.ceil(avgRating), productRatingStars);
 };
 
 const createReviewListItem = (review) => {
@@ -106,7 +113,7 @@ const getAvgRating = (reviewList) => {
 };
 
 const showRatingStars = (ratingValue, parentNode) => {
-    console.log(ratingValue);
+  console.log(ratingValue);
   for (let i = 1; i <= 5; i++) {
     const starSpan = document.createElement("span");
     starSpan.className = i <= ratingValue ? "fa fa-star checked" : "fa fa-star";
@@ -131,7 +138,7 @@ const closeAddReviewPopup = () => {
 };
 
 const removeAllChildNodes = (parent) => {
-    while (parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
-}
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+};
