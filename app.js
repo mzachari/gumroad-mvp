@@ -59,7 +59,6 @@ const showProductDetails = (product) => {
   productDetail.style.display = "block";
   productList.style.display = "none";
   productTitle.innerText = product.title;
-  productRating.innerText = 4;
   fetchProductReviews(product.productId);
 };
 
@@ -72,6 +71,7 @@ const fetchProductReviews = async (productId) => {
   }
 
   const avgRating = Math.ceil(getAvgRating(reviewList.data));
+  productRating.innerText = avgRating;
   showRatingStars(avgRating, productRatingStars);
 };
 
@@ -118,6 +118,8 @@ const showRatingStars = (ratingValue, parentNode) => {
 const showProductList = () => {
   productDetail.style.display = "none";
   productList.style.display = "block";
+  removeAllChildNodes(reviewList);
+  removeAllChildNodes(productRatingStars);
 };
 
 const openAddReviewPopup = () => {
@@ -127,3 +129,9 @@ const openAddReviewPopup = () => {
 const closeAddReviewPopup = () => {
   addReviewPopup.style.display = "none";
 };
+
+const removeAllChildNodes = (parent) => {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
