@@ -22,20 +22,19 @@
     <title>Review App</title>
   </head>
   <body>
-    <div class="app">
+    <div class="app pt-5">
       <div class="product-list"></div>
       <div class="product-detail-view">
-        <button class="button my-4" onclick="showProductList()">
+        <button class="btn btn-secondary my-4" onclick="showProductList()">
           Show Product List
         </button>
         <h2 class="product-title"></h2>
         <div class="product-detail-subtitle">
           <div class="produt-rating d-flex align-items-center">
             <h4 class="product-rating-number"></h4>
-            <div class="product-rating-stars mx-2">
-            </div>
+            <div class="product-rating-stars mx-2"></div>
           </div>
-          <button class="button" onclick="openAddReviewPopup()">
+          <button class="btn btn-primary" onclick="openAddReviewPopup()">
             Add Review
           </button>
         </div>
@@ -46,20 +45,58 @@
       </div>
 
       <div id="addReviewPopup" class="modal">
-        <div class="modal-content">
-          <span class="close" onclick="closeAddReviewPopup()">&times;</span>
-          <h2>What's your rating?</h2>
-          <h4>Rating</h4>
-          <h4>Review</h4>
+        <div class="modal-content px-5 py-4">
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <h2>What's your rating?</h2>
+
+            <button
+              class="btn close float-right"
+              onclick="closeAddReviewPopup()"
+            >
+              &times;
+            </button>
+          </div>
+
+          <h5 class="mt-4">Rating</h5>
+          <div class="rating-star-form-section my-2">
+            <span
+              id="rating-star#1"
+              class="fa fa-star"
+              onclick="ratingStarClicked(1)"
+            ></span>
+            <span
+              id="rating-star#2"
+              class="fa fa-star"
+              onclick="ratingStarClicked(2)"
+            ></span>
+            <span
+              id="rating-star#3"
+              class="fa fa-star"
+              onclick="ratingStarClicked(3)"
+            ></span>
+            <span
+              id="rating-star#4"
+              class="fa fa-star"
+              onclick="ratingStarClicked(4)"
+            ></span>
+            <span
+              id="rating-star#5"
+              class="fa fa-star"
+              onclick="ratingStarClicked(5)"
+            ></span>
+          </div>
+          <h5 class="mt-4">Review</h5>
           <textarea
+            class="my-2"
             placeholder="Start typing..."
             id="productReview"
             name="productReview"
             rows="4"
-            cols="50"
           >
           </textarea>
-          <button class="button my-5">Submit Review</button>
+          <button class="btn btn-success my-5" onclick="submitReview()">
+            Submit Review
+          </button>
         </div>
       </div>
     </div>

@@ -47,6 +47,10 @@
   cursor: pointer;
   width: max-content;
 }
+
+.btn{
+  width: max-content!important;
+}
 .product-expand-btn {
   border-radius: 100%;
   font-size: 2rem;
@@ -79,7 +83,6 @@
 .modal-content {
   background-color: #fefefe;
   margin: auto;
-  padding: 20px;
   border: 1px solid #888;
   width: 60%;
 }
@@ -87,7 +90,7 @@
 .close {
   color: #aaaaaa;
   float: right;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: bold;
 }
 
@@ -115,4 +118,10 @@
 }
 .no-reviews{
   display: none;
+}
+.rating-star-form-section .fa{
+  cursor: pointer!important;
+}
+textarea{
+  border: none;
 }

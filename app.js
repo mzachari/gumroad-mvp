@@ -6,6 +6,12 @@ const addReviewPopup = document.getElementById("addReviewPopup");
 const reviewList = document.querySelector(".review-list");
 const productRatingStars = document.querySelector(".product-rating-stars");
 const noReviewsSection = document.querySelector(".no-reviews");
+const ratingStarForm = document.querySelector(".rating-star-form-section");
+const reviewText = document.getElementById("productReview");
+
+let newReviewText = "";
+let newRating = 0;
+let selectedProductId = "";
 
 const productsEndpoint =
   "https://1ull7204d9.execute-api.ap-south-1.amazonaws.com/dev/products/";
@@ -57,6 +63,7 @@ const createProductListItem = (product) => {
 };
 
 const showProductDetails = (product) => {
+  selectedProductId = product.productId;
   productDetail.style.display = "block";
   productList.style.display = "none";
   productTitle.innerText = product.title;
@@ -72,14 +79,16 @@ const fetchProductReviews = async (productId) => {
   if (!reviewsPresent) {
     noReviewsSection.style.display = "block";
     return;
-  }
-  for (const review of reviewList.data) {
-    createReviewListItem(review);
-  }
+  } else {
+    noReviewsSection.style.display = "none";
+    for (const review of reviewList.data) {
+      createReviewListItem(review);
+    }
 
-  const avgRating = getAvgRating(reviewList.data);
-  productRating.innerText = avgRating;
-  showRatingStars(Math.ceil(avgRating), productRatingStars);
+    const avgRating = getAvgRating(reviewList.data);
+    productRating.innerText = Math.round(avgRating * 100) / 100;
+    showRatingStars(Math.ceil(avgRating), productRatingStars);
+  }
 };
 
 const createReviewListItem = (review) => {
@@ -125,12 +134,15 @@ const showRatingStars = (ratingValue, parentNode) => {
 const showProductList = () => {
   productDetail.style.display = "none";
   productList.style.display = "block";
+
+  productRating.innerText = "";
   removeAllChildNodes(reviewList);
   removeAllChildNodes(productRatingStars);
 };
 
 const openAddReviewPopup = () => {
   addReviewPopup.style.display = "block";
+  reviewText.value = "";
 };
 
 const closeAddReviewPopup = () => {
@@ -141,4 +153,35 @@ const removeAllChildNodes = (parent) => {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
   }
+};
+
+const ratingStarClicked = (ratingVal) => {
+  newRating = ratingVal;
+  let i = 0;
+  for (const node of ratingStarForm.childNodes) {
+    if (node.nodeName === "SPAN") {
+      i++;
+      if (i <= ratingVal) {
+        node.classList.add("checked");
+      } else {
+        node.classList.remove("checked");
+      }
+    }
+  }
+};
+
+const submitReview = async () => {
+  newReviewText = reviewText.value;
+  const apiResponse = await fetch(reviewsEndpoint + selectedProductId, {
+    method: "POST",
+    body: JSON.stringify({
+      reviewText: newReviewText,
+      rating: newRating,
+    }),
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+  const newReview = await apiResponse.json();
+  console.log(newReview);
 };
