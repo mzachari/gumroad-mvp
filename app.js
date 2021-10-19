@@ -180,10 +180,10 @@ const ratingStarClicked = (ratingVal) => {
 };
 
 const submitReview = async () => {
+  newReviewText = reviewText.value;
   if (newReviewText.trim().length === 0 || newRating <= 0) {
     return;
   }
-  newReviewText = reviewText.value;
   const newReview = await post(reviewsEndpoint + selectedProductId, {
     reviewText: newReviewText,
     rating: newRating,
