@@ -12,6 +12,7 @@ const reviewText = document.getElementById("productReview");
 let newReviewText = "";
 let newRating = 0;
 let selectedProductId = "";
+let selectedProductReviewList = [];
 
 const productsEndpoint =
   "https://1ull7204d9.execute-api.ap-south-1.amazonaws.com/dev/products/";
@@ -77,18 +78,23 @@ const fetchProductReviews = async (productId) => {
     noReviewsSection.style.display = "block";
     return;
   } else {
+    selectedProductReviewList = reviewList;
     noReviewsSection.style.display = "none";
     for (const review of reviewList) {
       createReviewListItem(review);
     }
-
-    const avgRating = getAvgRating(reviewList);
-    productRating.innerText = Math.round(avgRating * 100) / 100;
-    showRatingStars(Math.ceil(avgRating), productRatingStars);
+    updateAvgRating(reviewList);
   }
 };
 
-const createReviewListItem = (review) => {
+const updateAvgRating = (reviewList) => {
+  const avgRating = getAvgRating(reviewList);
+  productRating.innerText = Math.round(avgRating * 100) / 100;
+  removeAllChildNodes(productRatingStars);
+  showRatingStars(Math.ceil(avgRating), productRatingStars);
+};
+
+const createReviewListItem = (review, position = "bottom") => {
   const reviewNode = document.createElement("div");
   reviewNode.className = "review-item my-3 d-flex align-items-center";
 
@@ -106,7 +112,11 @@ const createReviewListItem = (review) => {
   reviewNode.appendChild(ratingNumberDiv);
   reviewNode.appendChild(reviewText);
 
-  reviewList.appendChild(reviewNode);
+  if (position === "bottom") {
+    reviewList.appendChild(reviewNode);
+  } else {
+    reviewList.insertBefore(reviewNode, reviewList.firstChild);
+  }
 };
 
 const getAvgRating = (reviewList) => {
@@ -131,6 +141,8 @@ const showProductList = () => {
   productDetail.style.display = "none";
   productList.style.display = "block";
 
+  selectedProductId = "";
+  selectedProductReviewList = [];
   productRating.innerText = "";
   removeAllChildNodes(reviewList);
   removeAllChildNodes(productRatingStars);
@@ -173,8 +185,11 @@ const submitReview = async () => {
     reviewText: newReviewText,
     rating: newRating,
   });
+  selectedProductReviewList.unshift(newReview);
+  noReviewsSection.style.display = "none";
   closeAddReviewPopup();
-  createReviewListItem(newReview);
+  createReviewListItem(newReview, "top");
+  updateAvgRating(selectedProductReviewList);
 };
 
 const get = async (endpointId) => {
